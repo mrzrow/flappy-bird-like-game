@@ -13,7 +13,7 @@ width = 1000
 height = 1000
 
 # ----- JUMP -----
-jump_vel = -30
-fall_vel = 15
+jump_vel = -25
+fall_vel = 12
 change_vel = 2
 jump_border = -5
