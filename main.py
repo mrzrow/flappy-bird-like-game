@@ -15,7 +15,7 @@ class StartScene:
         self.app = app
 
     def draw(self):
-        pg.draw.rect(app.screen, WHITE, (0, 0, width, height), width=20, border_radius=10)
+        pg.draw.rect(self.app.screen, WHITE, (0, 0, width, height), width=20, border_radius=10)
 
     def move(self):
         pass
@@ -31,6 +31,7 @@ class MainScene:
     def __init__(self, app):
         self.app = app
         self.bird = Bird(self.app)
+        self.score = Score(self.app)
         self.pillars = []
         for i in range(5):  # spawning pillars
             self.pillars.append(Pillar(self.app))
@@ -40,11 +41,15 @@ class MainScene:
         self.bird.draw()
         for pillar in self.pillars:
             pillar.draw()
+        self.score.draw()
 
     def move(self):
         self.bird.move()
         for pillar in self.pillars:
             pillar.x += pillar.vel_x
+            if (pillar.x < self.bird.x - pillar.width) and (not pillar.added_to_score):
+                self.score.current_score += 1
+                pillar.added_to_score = True
 
         if self.pillars[0].x < - self.pillars[0].width + 20:  # delet unshowed pillars
             self.pillars.pop(0)
@@ -58,6 +63,8 @@ class MainScene:
                 if (self.bird.y < pillar.space_y) or (
                         self.bird.y + self.bird.width > pillar.space_y + pillar.space_hight):
                     return True
+        if self.bird.y + self.bird.width >= height:
+            return True
         return False
 
 

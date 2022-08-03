@@ -17,3 +17,12 @@ jump_vel = -25
 fall_vel = 12
 change_vel = 2
 jump_border = -5
+
+# ----- PILLARS -----
+min_pillar_size = 50
+min_height_bot = height - min_pillar_size
+min_height_top = min_pillar_size
+
+# ----- SCORE -----
+font_size = 75
+score_coordinates = (20, 45)
