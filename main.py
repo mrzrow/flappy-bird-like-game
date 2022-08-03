@@ -53,18 +53,35 @@ class MainScene:
 
     def end(self):
         for pillar in self.pillars:  # collisions
-            if (pillar.x < self.bird.x < pillar.x + pillar.width) or (
-                    pillar.x < self.bird.x + self.bird.width < pillar.x + pillar.width):
+            if (pillar.x <= self.bird.x <= pillar.x + pillar.width) or (
+                    pillar.x <= self.bird.x + self.bird.width <= pillar.x + pillar.width):
                 if (self.bird.y < pillar.space_y) or (
                         self.bird.y + self.bird.width > pillar.space_y + pillar.space_hight):
                     return True
         return False
 
 
+class EndScene:
+    def __init__(self, app):
+        self.app = app
+
+    def draw(self):
+        pg.draw.circle(self.app.screen, WHITE, (width // 2, height // 2), width // 4)
+
+    def move(self):
+        pass
+
+    def end(self):
+        keys = pg.key.get_pressed()
+        if keys[pg.K_a]:
+            return True
+        return False
+
+
 class App:
     def __init__(self):
         self.scene_index = 0
-        self.scenes = (StartScene(self), MainScene(self))
+        self.scenes = (StartScene(self), MainScene(self), EndScene(self))
 
         self.screen = pg.display.set_mode((width, height))
         self.clock = pg.time.Clock()
@@ -84,6 +101,9 @@ class App:
                     exit()
 
             self.scene_index = scene_manage_move(self.scene_index, self.scenes)
+            if self.scene_index == len(self.scenes):
+                self.scene_index = 0
+                self.scenes = (StartScene(self), MainScene(self), EndScene(self))
             self.clock.tick(60)
 
 

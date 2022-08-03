@@ -27,11 +27,11 @@ class Pillar:
     def __init__(self, app):
         self.app = app
         self.x = width - width // 3
-        self.width = width // 5
+        self.width = width // 6
 
-        self.space_hight = height // 3
+        self.space_hight = height // 2
         self.max_space_up = 10
-        self.max_space_down = height - height // 3 + 10
+        self.max_space_down = height - self.space_hight + 10
         self.space_y = randint(self.max_space_up, self.max_space_down)
 
         self.vel_x = -5
