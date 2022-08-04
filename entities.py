@@ -4,8 +4,6 @@ import os
 from constants import *
 
 
-
-
 class Bird:
     def __init__(self, app):
         self.app = app
