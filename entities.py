@@ -3,7 +3,7 @@ import pygame as pg
 import os
 from constants import *
 
-pg.font.init()
+
 
 
 class Bird:
@@ -19,7 +19,9 @@ class Bird:
 
     def move(self):
         keys = pg.key.get_pressed()
-        if keys[pg.K_SPACE] and self.vel_y > jump_border:
+
+        # jump
+        if (keys[pg.K_SPACE] or pg.mouse.get_pressed()[0]) and self.vel_y > jump_border:
             self.vel_y = jump_vel
         elif self.vel_y != fall_vel:
             self.vel_y += change_vel
@@ -35,7 +37,7 @@ class Pillar:
         self.image_bot = pg.image.load(os.path.join('images', 'pillar_bot.png'))
         self.images_size = (167, 1000)
 
-        self.space_hight = height // 2
+        self.space_hight = int(height * 0.4)
         self.max_space_up = min_height_top
         self.max_space_down = min(height - self.space_hight, min_height_bot)
         self.space_y = randint(self.max_space_up, self.max_space_down)
@@ -46,9 +48,6 @@ class Pillar:
         self.spacing = int(width * 0.45)
 
     def draw(self):
-        # pg.draw.rect(self.app.screen, WHITE, (self.x, 0, self.width, self.space_y), border_radius=10)
-        # pg.draw.rect(self.app.screen, WHITE, (self.x, self.space_y + self.space_hight, self.width, height),
-        #              border_radius=10)
         self.app.screen.blit(self.image_top, (self.x, self.space_y - self.images_size[1]))
         self.app.screen.blit(self.image_bot, (self.x, self.space_y + self.space_hight))
 
@@ -62,9 +61,8 @@ class Score:
         self.bg_image = pg.image.load(os.path.join('images', 'score_back.png'))
 
     def draw(self):
-        # pg.draw.rect(self.app.screen, BLACK, self.rect_coords, border_radius=5)
         self.app.screen.blit(self.bg_image, (self.rect_coords[:2]))
-        score_image = self.score_font.render(str(self.current_score), True, WHITE)
+        score_image = self.score_font.render(str(self.current_score), True, BLACK)
         score_rect = score_image.get_rect(
             center=(self.rect_coords[0] + self.rect_coords[2] // 2, self.rect_coords[1] + self.rect_coords[3] // 2))
         self.app.screen.blit(score_image, score_rect)

@@ -2,6 +2,8 @@ import pygame as pg
 from constants import *
 from entities import *
 
+pg.font.init()
+
 
 def scene_manage_move(scene_index, scenes):
     scenes[scene_index].move()
@@ -13,9 +15,23 @@ def scene_manage_move(scene_index, scenes):
 class StartScene:
     def __init__(self, app):
         self.app = app
+        self.clock = pg.time.Clock()
+
+        self.button_image_s = pg.image.load(os.path.join('images', 'start_button.png'))
+        self.image_rect = self.button_image_s.get_rect(center=(width // 2, height // 2))
+
+        self.font_press = pg.font.SysFont(os.path.join('fonts', 'Debrosee-ALPnL.ttf'), 40)
+        self.text_press = self.font_press.render('CLICK or press \'SPACE\' to START', True, BLACK)
+        self.text_press_rect = self.text_press.get_rect(center=(width // 2, int(height*0.6)))
+
+        self.font_start = pg.font.SysFont(os.path.join('fonts', 'Debrosee-ALPnL.ttf'), 250)
+        self.text_start = self.font_start.render('START', True, BLACK)
+        self.text_rect = self.text_start.get_rect(center=(width // 2, height // 2))
 
     def draw(self):
-        pg.draw.rect(self.app.screen, WHITE, (0, 0, width, height), width=20, border_radius=10)
+        self.app.screen.blit(self.button_image_s, self.image_rect)
+        self.app.screen.blit(self.text_start, self.text_rect)
+        self.app.screen.blit(self.text_press, self.text_press_rect)
 
     def move(self):
         pass
@@ -24,6 +40,10 @@ class StartScene:
         keys = pg.key.get_pressed()
         if keys[pg.K_SPACE]:
             return True
+        if pg.mouse.get_pressed()[0]:
+            xm, ym = pg.mouse.get_pos()
+            if self.image_rect.collidepoint(xm, ym):
+                return True
         return False
 
 
@@ -51,7 +71,7 @@ class MainScene:
                 self.score.current_score += 1
                 pillar.added_to_score = True
 
-        if self.pillars[0].x < - self.pillars[0].width + 20:  # delet unshowed pillars
+        if self.pillars[0].x < - self.pillars[0].width + 20:  # delete unshowed pillars
             self.pillars.pop(0)
             self.pillars.append(Pillar(self.app))
             self.pillars[-1].x = self.pillars[-2].x + self.pillars[-1].spacing
@@ -72,15 +92,28 @@ class EndScene:
     def __init__(self, app):
         self.app = app
 
+        self.button_image_s = pg.image.load(os.path.join('images', 'start_button.png'))
+        self.image_rect = self.button_image_s.get_rect(center=(width // 2, height // 2))
+
+        self.font_start = pg.font.SysFont(os.path.join('fonts', 'Debrosee-ALPnL.ttf'), 150)
+        self.text_start = self.font_start.render('CONTINUE', True, BLACK)
+        self.text_rect = self.text_start.get_rect(center=(width // 2, height // 2))
+
+        self.font_press = pg.font.SysFont(os.path.join('fonts', 'Debrosee-ALPnL.ttf'), 40)
+        self.text_press = self.font_press.render('press \'C\' to CONTINUE', True, BLACK)
+        self.text_press_rect = self.text_press.get_rect(center=(width // 2, int(height * 0.6)))
+
     def draw(self):
-        pg.draw.circle(self.app.screen, WHITE, (width // 2, height // 2), width // 4)
+        self.app.screen.blit(self.button_image_s, self.image_rect)
+        self.app.screen.blit(self.text_start, self.text_rect)
+        self.app.screen.blit(self.text_press, self.text_press_rect)
 
     def move(self):
         pass
 
     def end(self):
         keys = pg.key.get_pressed()
-        if keys[pg.K_a]:
+        if keys[pg.K_c]:
             return True
         return False
 
@@ -94,10 +127,15 @@ class App:
         self.clock = pg.time.Clock()
         pg.display.set_caption('Example')
 
+        self.bg_image = pg.image.load(os.path.join('images', 'bg_image.png'))
+
     def draw(self):
-        self.screen.fill(bg_color)
+        self.screen.blit(self.bg_image, (0, 0))
         self.scenes[self.scene_index].draw()
+        pg.draw.rect(self.screen, BLACK, (0, 0, width, height), width=10)
         pg.display.flip()
+
+        pg.display.set_caption(str(self.clock.get_fps()))
 
     def run(self):
         while True:
@@ -107,6 +145,7 @@ class App:
                 if event.type == pg.QUIT:
                     exit()
 
+            # scene managment
             self.scene_index = scene_manage_move(self.scene_index, self.scenes)
             if self.scene_index == len(self.scenes):
                 self.scene_index = 0
