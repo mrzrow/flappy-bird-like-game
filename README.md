@@ -1,5 +1,3 @@
 # flappy-bird-like-game
 
-It's just a simple game with mechanics like in FlappyBird
-
-Made with PyGame only using self-made textures
+It's a straightforward game with mechanics similar to Flappy Bird, created solely using PyGame and featuring custom-made textures.
