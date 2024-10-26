@@ -12,8 +12,15 @@ class Bird:
         self.y = height // 2
         self.width = self.height = 50
 
+        self.image_fly = pg.image.load(os.path.join('images', 'plate_fly.png'))
+        self.image_jump = pg.image.load(os.path.join('images', 'plate_jump.png'))
+
     def draw(self):
-        pg.draw.rect(self.app.screen, RED, (self.x, self.y, self.width, self.height), border_radius=10)
+        if self.vel_y > jump_border:
+            self.app.screen.blit(self.image_fly, (self.x, self.y))
+        else:
+            self.app.screen.blit(self.image_jump, (self.x, self.y))
+        # pg.draw.rect(self.app.screen, RED, (self.x, self.y, self.width, self.height), border_radius=10)
 
     def move(self):
         keys = pg.key.get_pressed()
